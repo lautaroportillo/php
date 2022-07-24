@@ -74,8 +74,8 @@ $_SESSION["listadoClientes"] = $aClientes;
                             <input type="text" id="txtEdad" name="txtEdad" class="form-control">
                         </div>
                         <div class="my-3">
-                            <button class="btn btn-primary my-3">ENVIAR</button>
-                            <button class="btn btn-danger my-3">ELIMINAR</button>
+                            <button type="submit" name="btnEnviar" class="btn btn-primary text-white">ENVIAR</button>
+                            <button type="submit" name="btnEliminar" class="btn btn-danger text-white">ELIMINAR</button>
                         </div>
                     </form>
                 </div>
