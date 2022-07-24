@@ -7,10 +7,14 @@ error_reporting(E_ALL);
 
 session_start();
 
-$aClientes = array();
+if(isset($_SESSION["listadoClientes"])){
+    //Si existe la variable de session listadoClientes asigno su contenido a aClientes
+    $aClientes = $_SESSION["listadoClientes"];
+}else{
+    $aClientes = array();
+}
 
-
-if ($_POST)
+if ($_POST){
 
     //Asignamos en variables los datos que vienen del formulario
     $nombre = $_POST["txtNombre"];
@@ -20,12 +24,15 @@ if ($_POST)
 
 //creamos un array que contendra el listado de clientes
 
-$aClientes[] = array("nombre" => $nombre, "dni" => $dni, "telefono" => $telefono, "edad" => $edad);
+$aClientes[] = array("nombre" => $nombre,
+                     "dni" => $dni,
+                      "telefono" => $telefono,
+                       "edad" => $edad
+);
+//actualiza el contenido de variable de session
+$_SESSION["listadoClientes"] = $aClientes;
 
-
-print_r($aClientes);
-
-
+}
 
 
 ?>
@@ -52,19 +59,19 @@ print_r($aClientes);
                     <form method="POST">
                         <div class="my-3">
                             <table for="">Nombre:</table>
-                            <input type="text" id="textNombre" name="txtNombre" class="form-control">
+                            <input type="text" id="txtNombre" name="txtNombre" class="form-control">
                         </div>
                         <div class="my-3">
                             <table for="">DNI:</table>
-                            <input type="text" id="textDni" name="txtDni" class="form-control">
+                            <input type="text" id="txtDni" name="txtDni" class="form-control">
                         </div>
                         <div class="my-3">
                             <table for="">Telefono:</table>
-                            <input type="text" id="text" name="txtPrecioSinIva" class="form-control">
+                            <input type="text" id="txtTelefono" name="txtTelefono" class="form-control">
                         </div>
                         <div class="my-3">
                             <table for="">Edad:</table>
-                            <input type="text" id="textconiva" name="txtPrecioConIva" class="form-control">
+                            <input type="text" id="txtEdad" name="txtEdad" class="form-control">
                         </div>
                         <div class="my-3">
                             <button class="btn btn-primary my-3">ENVIAR</button>
