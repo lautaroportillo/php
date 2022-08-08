@@ -10,7 +10,7 @@ if(file_exists("archivo.txt")){
     //Vamos a leerlo y almacenamos el contenido en jsonClientes
     $jsonClientes = file_get_contents("archivo.txt");
     //Convertir jsonClientes en un array llamado aClientes
-    $aCientes = json_decode($jsonClientes, true);
+    $aClientes = json_decode($jsonClientes, true);
 } else{    
 //si existe el archivo
     //Creamos un aClientes inicializado como un array vacío
@@ -41,6 +41,14 @@ if($_POST){
 }
 
 
+if(isset($_GET["do"]) && $_GET["do"] == "editar"){
+$pos = isset($_GET["pos"]) && $_GET["pos"] >= 0? $_GET["pos"]:"";
+print_r($aClientes[$pos]["cocumento"]);
+}
+if(isset($_GET["do"]) && $_GET["do"] == "eliminar"){
+    $pos = isset($_GET["pos"]) && $_GET["pos"] >= 0? $_GET["pos"]:"";
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -66,19 +74,19 @@ if($_POST){
                     <form method="POST" enctype="multipart/form-data">
                         <div class="my-3">
                             <table for="">Nombre:</table>
-                            <input type="text" id="txtNombre" name="txtNombre" class="form-control">
+                            <input type="text" id="txtNombre" name="txtNombre" class="form-control" required value="<?php $aClientes[$pos]["nombre"]; ?>">
                         </div>
                         <div class="my-3">
                             <table for="">DNI:</table>
-                            <input type="text" id="txtDni" name="txtDni" class="form-control">
+                            <input type="text" id="txtDni" name="txtDni" class="form-control" required value="<?php $aClientes[$pos]["dni"]; ?>">
                         </div>
                         <div class="my-3">
                             <table for="">Telefono:</table>
-                            <input type="text" id="txtTelefono" name="txtTelefono" class="form-control">
+                            <input type="text" id="txtTelefono" name="txtTelefono" class="form-control" value="<?php $aClientes[$pos]["telefono"]; ?>">
                         </div>
                         <div class="my-3">
                             <table for="">Correo:</table>
-                            <input type="text" id="txtCorreo" name="txtCorreo" class="form-control">
+                            <input type="text" id="txtCorreo" name="txtCorreo" class="form-control" required value="<?php $aClientes[$pos]["correo"]; ?>">
                         </div>
                         <div>
                             <label for="">Archivo adjunto</label>
@@ -102,14 +110,15 @@ if($_POST){
                                 <th>Correo:</th>
                                 <th>Acciones</th>
                             </tr>
-                            <?php foreach ($aClientes as $cliente): ?>
+                            <?php foreach ($aClientes as $pos => $cliente): ?>
                             <tr>
                               <td></td>
                               <td><?php echo $cliente["nombre"]; ?></td>
                               <td><?php echo $cliente["dni"]; ?></td>
                               <td><?php echo $cliente["correo"]; ?></td>
-                              <td><a href=""></a>
-                                  <a href=""><i class="bi bi-trash"></i></a>
+                              <td>
+                                  <a href="index.php?pos=<?php echo $pos; ?>&do=editar"><i class="fa-solid fa-pencil"></i></a>
+                                  <a href="index.php?pos=<?php echo $pos; ?>&do=eliminar"><i class="fa-solid fa-trash-can"></i></a>
                                 </td>
                             </tr>
 
