@@ -17,19 +17,61 @@ if(file_exists("archivo.txt")){
     $aClientes = array();
 }
 
+$pos = isset($_GET["pos"]) && $_GET["pos"] >= 0 ? $_GET["pos"]:"";  
 
 if($_POST){
     $dni = trim($_POST["txtDni"]);
     $nombre = trim($_POST["txtNombre"]);
     $telefono = trim($_POST["txtTelefono"]);
     $correo = trim($_POST["txtCorreo"]);
+    $nombreImagen = "";
 
 
+if($pos>=0){
+    if ($_FILES["archivo"]["error"] === UPLOAD_ERR_OK){
+        $nombreAleatorio = date("Ymdhmsi"); //2021010420453710
+        $archivo_tmp = $_FILES["archivo"]["tmp_name"];
+        $extension = pathinfo($_FILES["archivo"]["name"], PATHINFO_EXTENSION);
+        if($extension == "jpg" || $extension == "jpeg" || $extension == "png"){
+            $nombreImagen = "$nombreAleatorio.$extension";
+          move_uploaded_file($archivo_tmp, "imagenes/$nombreImagen");
+        }
+
+        //eliminar la imagen anterior
+        if($aClientes[$pos]["imagen"] != "" && file_exists("imagenes/".$aClientes[$pos]["imagen"])){
+            unlink("imagenes".$aClientes[$pos]["imagen"]);
+        }
+    } else{
+        //Mantener el nombreImagen que teniamos antes
+        $nombreImagen = $aClientes[$pos]["imagen"];
+
+
+    }
+    //Actualizar
+$aClientes[$pos] = array("dni" => $dni,
+                         "nombre" => $nombre,
+                         "telefono" => $telefono,
+                         "correo" => $correo,
+                         "imagen" => $nombreImagen);
+                         
+} else{
+    if ($_FILES["archivo"]["error"] === UPLOAD_ERR_OK){
+    $nombreAleatorio = date("Ymdhmsi"); //2021010420453710
+    $archivo_tmp = $_FILES["archivo"]["tmp_name"];
+    $extension = pathinfo($_FILES["archivo"]["name"], PATHINFO_EXTENSION);
+    if($extension == "jpg" || $extension == "jpeg" || $extension == "png"){
+        $nombreImagen = "$nombreAleatorio.$extension";
+      move_uploaded_file($archivo_tmp, "imagenes/$nombreImagen");
+    }
+}
+    //Insertar
     $aClientes[] = array("dni" => $dni,
                          "nombre" => $nombre,
                          "telefono" => $telefono,
-                         "correo" => $correo);
-                         
+                         "correo" => $correo,
+                         "imagen" => $nombreImagen);
+}
+    
 //convertir el array de clientes a jsonclientes
     $aClientes = json_encode($aClientes);
 
@@ -41,12 +83,20 @@ if($_POST){
 }
 
 
-if(isset($_GET["do"]) && $_GET["do"] == "editar"){
-$pos = isset($_GET["pos"]) && $_GET["pos"] >= 0? $_GET["pos"]:"";
-print_r($aClientes[$pos]["cocumento"]);
-}
+
 if(isset($_GET["do"]) && $_GET["do"] == "eliminar"){
-    $pos = isset($_GET["pos"]) && $_GET["pos"] >= 0? $_GET["pos"]:"";
+    //Eliminar del array aClientes la posición a borrar unset()
+     unset($aClientes[$pos]);
+
+    //Convertir el array a json
+     $jsonClientes = json_encode($aClientes);
+
+    //Almacenar el json en el archivo
+    file_put_contents("archivo.txt", $jsonClientes);
+
+    header("Location: index.php");
+
+
 }
 
 ?>
@@ -74,19 +124,19 @@ if(isset($_GET["do"]) && $_GET["do"] == "eliminar"){
                     <form method="POST" enctype="multipart/form-data">
                         <div class="my-3">
                             <table for="">Nombre:</table>
-                            <input type="text" id="txtNombre" name="txtNombre" class="form-control" required value="<?php $aClientes[$pos]["nombre"]; ?>">
+                            <input type="text" id="txtNombre" name="txtNombre" class="form-control" required value="<?php echo isset($aClientes[$pos])? $aClientes[$pos]["nombre"]: "" ?>">
                         </div>
                         <div class="my-3">
                             <table for="">DNI:</table>
-                            <input type="text" id="txtDni" name="txtDni" class="form-control" required value="<?php $aClientes[$pos]["dni"]; ?>">
+                            <input type="text" id="txtDni" name="txtDni" class="form-control" required value="<?php echo isset($aClientes[$pos])? $aClientes[$pos]["dni"]: "" ?>">
                         </div>
                         <div class="my-3">
                             <table for="">Telefono:</table>
-                            <input type="text" id="txtTelefono" name="txtTelefono" class="form-control" value="<?php $aClientes[$pos]["telefono"]; ?>">
+                            <input type="text" id="txtTelefono" name="txtTelefono" class="form-control" value="<?php echo isset($aClientes[$pos])? $aClientes[$pos]["telefono"]: "" ?>">
                         </div>
                         <div class="my-3">
                             <table for="">Correo:</table>
-                            <input type="text" id="txtCorreo" name="txtCorreo" class="form-control" required value="<?php $aClientes[$pos]["correo"]; ?>">
+                            <input type="text" id="txtCorreo" name="txtCorreo" class="form-control" required value="<?php echo isset($aClientes[$pos])? $aClientes[$pos]["correo"]: "" ?>">
                         </div>
                         <div>
                             <label for="">Archivo adjunto</label>
@@ -110,9 +160,15 @@ if(isset($_GET["do"]) && $_GET["do"] == "eliminar"){
                                 <th>Correo:</th>
                                 <th>Acciones</th>
                             </tr>
+                                
                             <?php foreach ($aClientes as $pos => $cliente): ?>
                             <tr>
-                              <td></td>
+                                <td>
+                                   <?php if($cliente["imagen"] !=""): ?>
+                                       <img src="imagenes/<?php echo $cliente["imagen"]; ?>" class="img-thumbnail" alt="">
+                                    <?php endif; ?>
+                                </td>
+                              
                               <td><?php echo $cliente["nombre"]; ?></td>
                               <td><?php echo $cliente["dni"]; ?></td>
                               <td><?php echo $cliente["correo"]; ?></td>
