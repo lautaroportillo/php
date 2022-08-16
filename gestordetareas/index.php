@@ -4,32 +4,32 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-if (file_exists("archivo.txt")){
+if (file_exists("archivo.txt")) {
     //si el archivo existe, carlo la tarea en la variable aTareas
     $strJson = file_get_contents("archivo.txt");
     $aTareas = json_decode($strJson, true);
-} else{
+} else {
     //Si el archivo no existe es por que no hay tareas
     $aTareas = array();
 }
 
-if(isset ($_GET["id"]) && $_GET["id"] >= 0){
+if (isset($_GET["id"]) && $_GET["id"] >= 0) {
     $id = $_GET["id"];
-} else{
+} else {
     $id = "";
 }
 
-if($_POST){
+if ($_POST) {
     $titulo = $_POST["txtTitulo"];
     $prioridad = $_POST["txtPrioridad"];
     $usuario = $_POST["txtUsuario"];
     $estado = $_POST["txtEstado"];
     $descripcion = $_POST["txtDescripcion"];
 
-    if($id >= 0){
+    if ($id >= 0) {
         //Estoy editando una tarea
         $aTareas[$id] = array(
-            "fecha" => $aTareas [$id]["fecha"],
+            "fecha" => $aTareas[$id]["fecha"],
             "prioridad" => $prioridad,
             "usuario" => $usuario,
             "estado" => $estado,
@@ -51,9 +51,9 @@ if($_POST){
     $strJson = json_encode($aTareas);
 
     //Almacenar en un archivo.txt el json con file_put_contents
-    file_put_contents("archivo.txt" , $strJson);
+    file_put_contents("archivo.txt", $strJson);
 }
-if(isset($_GET["do"]) && $_GET["do"] == "eliminar") {
+if (isset($_GET["do"]) && $_GET["do"] == "eliminar") {
     unset($aTareas[$id]);
 
     //convertir aTareas en json
@@ -92,41 +92,107 @@ if(isset($_GET["do"]) && $_GET["do"] == "eliminar") {
             <div class="col-12 text-center py-5">
                 <h1>Gestor de Tareas</h1>
             </div>
-            <div class="row">
-                <div class="col-12">
-                    <form method="POST" enctype="multipart/form-data">
-                        <div class="col-12 my-3">
-                            <div class="col-4">
-                            <table for="">Prioridad:</table>
-                            <input type="text" id="txtNombre" name="txtNombre" class="form-control" required value="">
+        </div>
+        <div class="row pb-3">
+            <div>
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="py-1 col-4">
+                            <label for="lstPrioridad">Prioridad</label>
+                            <select name="lstPrioridad" id="lstPrioridad" class="form-control" required>
+                                <option value="" disabled selected>Selecionar</option>
+                                <option value="Alta" <?php echo isset($aTareas[$id]) && $aTareas[$id]["prioridad"] == "Alta" ? "selected" : ""; ?>>Alta</option>
+                                <option value="Media" <?php echo isset($aTareas[$id]) && $aTareas[$id]["prioridad"] == "Media" ? "selected" : ""; ?>>Media</option>
+                                <option value="Baja" <?php echo isset($aTareas[$id]) && $aTareas[$id]["prioridad"] == "Baja" ? "selected" : ""; ?>>Baja</option>
+                            </select>
                         </div>
-                        <div class="col-4">
-                            <table for="">Usuario:</table>
-                            <input type="text" id="txtNombre" name="txtNombre" class="form-control" required value="">
+                        <div class="py-1 col-4">
+                            <label for="lstUsuario">Usuario</label>
+                            <select name="lstUsuario" id="lstUsuario" class="form-control" required>
+                                <option value="" disabled selected>Selecionar</option>
+                                <option value="Ana" <?php echo isset($aTareas[$id]) && $aTareas[$id]["usuario"] == "Ana" ? "selected" : ""; ?>>Ana</option>
+                                <option value="Bernabe" <?php echo isset($aTareas[$id]) && $aTareas[$id]["usuario"] == "Bernabe" ? "selected" : ""; ?>>Bernabe</option>
+                                <option value="Daniela" <?php echo isset($aTareas[$id]) && $aTareas[$id]["usuario"] == "Daniela" ? "selected" : ""; ?>>Daniela</option>
+                            </select>
                         </div>
-                            
-                            <table for="">Estado:</table>
-                            <input type="text" id="txtNombre" name="txtNombre" class="form-control" required value="">
+                        <div class="py-1 col-4">
+                            <label for="lstEstado">Estado</label>
+                            <select name="lstEstado" id="lstEstado" class="form-control" required>
+                                <option value="" disabled selected>Selecionar</option>
+                                <option value="Sin asignar" <?php echo isset($aTareas[$id]) && $aTareas[$id]["estado"] == "Sin asignar" ? "selected" : ""; ?>>Sin asignar</option>
+                                <option value="Asignado" <?php echo isset($aTareas[$id]) && $aTareas[$id]["estado"] == "Asignado" ? "selected" : ""; ?>>Asignado</option>
+                                <option value="En proceso" <?php echo isset($aTareas[$id]) && $aTareas[$id]["estado"] == "En proceso" ? "selected" : ""; ?>>En proceso</option>
+                                <option value="Terminado" <?php echo isset($aTareas[$id]) && $aTareas[$id]["estado"] == "Terminado" ? "selected" : ""; ?>>Terminado</option>
+                            </select>
                         </div>
-                        <div class=" col-12 my-3">
-                            <table for="">Titulo:</table>
-                            <input type="text" id="txtTelefono" name="txtTelefono" class="form-control" value="">
+                    </div>
+                    <div class="row">
+                        <div class="col-12 py-1">
+                            <label for="txtTitulo">Titulo</label>
+                            <textarea name="txtTitulo" id="txtTitulo" required></textarea>
                         </div>
-                        <div class="my-3">
-                            <table for="">Descripción:</table>
-                            <input type="text" id="txtmensaje" name="txtmensaje" class="form-control" required value="">
+                    </div>
+                    <div class="row">
+                        <div class="col-12 py-1">
+                            <label for="txtDescripcion">Descripcion</label>
+                            <textarea name="txtDescripcion" id="txtDescripcion" required></textarea>
                         </div>
-                       
-                        <div class=" col-12 my-3 text-center">
-                            <button type="submit" name="btnGuardar" class="btn btn-primary text-white">Guardar</button>
-                            <button type="submit" name="btnNuevo" class="btn btn-secondary text-white">Cancelar</button>
-                        </div> 
-                    </form>
-                </div>
-               
+                    </div>
+                    <div class="row">
+                        <div class="col-12 py-1 text-center">
+                            <button type="submit" id="btnEnviar" name="btnEnviar" class="form-control"></button>
+                        </div>
+                    </div>
+                    <div class=" col-12 my-3 text-center">
+                        <button type="submit" name="btnGuardar" class="btn btn-primary text-white">Guardar</button>
+                        <button type="submit" name="btnNuevo" class="btn btn-secondary text-white">Cancelar</button>
+                    </div>
+                </form>
             </div>
         </div>
+        <?php if(count($aTareas)): ?>
+            <div class="row">
+                <div class="col-12 pt-3">
+                    <table class="table table-hover border">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha de insercion</th>
+                                <th>Título</th>
+                                <th>Prioridad</th>
+                                <th>Usuario</th>
+                                <th>estado</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($aTareas as $pos => $tarea) : ?>
+                                <tr>
+                                    <td><?php echo $pos ?></td>
+                                    <td><?php echo $tarea["fecha"]; ?></td>
+                                    <td><?php echo $tarea["titulo"]; ?></td>
+                                    <td><?php echo $tarea["prioridad"]; ?></td>
+                                    <td><?php echo $tarea["usuario"]; ?></td>
+                                    <td><?php echo $tarea["estado"]; ?></td>
+                                    <td>
+                                        <a href="?id=<?php echo $pos; ?>&do=editar" class="btn btn-secundary"><i class="fa-solid fa-pencil"></i></a>
+                                        <a href="?=<?php echo $pos; ?>&do=eliminar" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <?php else : ?>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-info" role="alert">
+                        Aún no se han cargado tareas.
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
     </main>
 </body>
-
 </html>
