@@ -21,9 +21,9 @@ if (isset($_GET["id"]) && $_GET["id"] >= 0) {
 
 if ($_POST) {
     $titulo = $_POST["txtTitulo"];
-    $prioridad = $_POST["txtPrioridad"];
-    $usuario = $_POST["txtUsuario"];
-    $estado = $_POST["txtEstado"];
+    $prioridad = $_POST["lstPrioridad"];
+    $usuario = $_POST["lstUsuario"];
+    $estado = $_POST["lstEstado"];
     $descripcion = $_POST["txtDescripcion"];
 
     if ($id >= 0) {
