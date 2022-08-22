@@ -32,6 +32,7 @@ class Cliente{
         echo "Nombre" . $this->nombre . "<br>";
         echo "Correo" . $this->edad . "<br>";
         echo "Telefono" . $this->nacionalidad . "<br>";
+        echo "Descuento" . $this->descuento . "<br><br>";
     }
 }
 
@@ -40,6 +41,7 @@ class Producto{
     private $cod;
     private $nombre;
     private $precio;
+    private $descripcion;
     private $iva;
 
     public function __get($propiedad) {
@@ -53,10 +55,17 @@ class Producto{
 
     public function __construct()
     {
-        
+        $this->precio = 0.0;
+        $this->iva = 0.0;
     }
 
-    public function imprimir(){}
+    public function imprimir(){
+        echo "Cod:" . $this->cod . "<br>";
+        echo "Nombre:" . $this->nombre . "<br>";
+        echo "Precio:" . $this->precio . "<br>";
+        echo "Descripcion:" . $this->descripcion . "<br>";
+        echo "Iva:" . $this->iva . "<br><br>";
+    }
 }
 
 
@@ -77,11 +86,34 @@ class Carrito{
 
     public function __construct()
     {
-        
+       $this->aProductos = array();
+       $this->subtotal = 0.0;
+       $this->total = 0.0; 
+    }
+
+    public function cargarProducto($producto){
+        $this->aProductos[] = $producto;
     }
 
 
-    public function imprimir(){}
+
+    public function imprimirTicket(){
+        echo "<table class='table table-hover border'>";
+        echo "<tr><th class='text-center'>ECO MARKET</th></tr>
+                <tr>
+                  <th>Fecha</th>
+                  <td>" . date("d/m/Y H:i:s")"</td>
+                </tr>
+                <tr>
+                 <th>DNI</th>
+                 <td>" . $this->cliente->dni . "</td>
+              </tr>
+              <tr>
+                <th>Nombre</th>
+                <td>" . $this->cliente->nombre . "</td>
+              </tr>
+        echo </table>";
+    }
 
 }
 
@@ -113,10 +145,37 @@ $producto2->imprimir();
 
 $carrito = new Carrito();
 $carrito->cliente = $cliente1;
+echo "Nombre del cliente" . $carrito->cliente->nombre;
 //print_r($carrito);
 $carrito->cargarProducto($producto1);
 $carrito->cargarProducto($producto2);
-//print_r($carrito);
+print_r($carrito);
+echo $carrito->aProductos[0]->nombre;
 $carrito->imprimirTicket(); //Imprime el ticket de la compra
 
 ?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+</head>
+<body>
+    <main class="container">
+        <div class="row">
+            <div class="col-12">
+                <?php $carrito->imprimirTicket; ?>
+
+            </div>
+        </div>
+
+    </main>
+
+    
+</body>
+</html>
