@@ -24,6 +24,11 @@ class Producto{
         $this->$atributo = $valor;
         return $this;
     }
+
+    public function cargarFormulario($request){
+        $this->idproducto = isset($request["id"])? $request["id"] : "";
+        $this->nombre = isset($request["txtNombre"])? $request["txtNombre"] : "";
+    }
     
     public function insertar()
     {
