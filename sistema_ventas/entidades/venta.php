@@ -10,8 +10,8 @@ class Venta{
     private $fk_idcliente;
     private $fk_idproducto;
 
-    private $nombre_cliente;
-    private $nombre_producto;
+    private $cliente_nombre;
+    private $producto_nombre;
 
 
     public function __construct()
@@ -213,23 +213,22 @@ class Venta{
         return $aResultado;
     }
 
-    public function CargarGrilla(){
+    public function cargarGrilla(){
         $mysqli = new mysqli(Config::BBDD_HOST, Config::BBDD_USUARIO, Config::BBDD_CLAVE, Config::BBDD_NOMBRE, Config::BBDD_PORT);
 
-        $sql = "SELECT
-                A.idventa,
-                A.fecha,
-                A.cantidad,
-                A.fk_idcliente
-                B.nombre AS nombre_cliente,
-                A.fk_idproducto,
-                A.total,
-                A.preciounitario,
-                C.nombre AS nombre_producto
-          FROM ventas A
-          INNER JOIN clientes B ON A.fk_idcliente = B.idcliente
-          INNER JOIN productos C ON A.fk_idproducto = C.idproducto
-          ORDER BY A.fecha DESC";
+        $sql = "SELECT A.idventa, 
+                       A.fecha, 
+                       A.fk_idcliente, 
+                       B.nombre AS cliente_nombre, 
+                       A.fk_idproducto, 
+                       C.nombre AS producto_nombre, 
+                       A.cantidad, 
+                       A.preciounitario, 
+                       A.total
+             FROM ventas A
+             INNER JOIN clientes B ON B.idcliente = A.fk_idcliente
+             INNER JOIN productos C ON C.idproducto = A.fk_idproducto
+             ORDER BY A.fecha DESC";
 
         if (!$resultado = $mysqli->query($sql)){
             printf("Error en query: %s\n", $mysqli->error . " " . $sql);
@@ -246,8 +245,8 @@ class Venta{
                 $entidadAux->fecha = $fila["fecha"];
                 $entidadAux->cantidad = $fila["cantidad"];
                 $entidadAux->preciounitario = $fila["preciounitario"];
-                $entidadAux->nombre_cliente = $fila["nombre_cliente"];
-                $entidadAux->nombre_producto= $fila["nombre_producto"];
+                $entidadAux->cliente_nombre = $fila["cliente_nombre"];
+                $entidadAux->producto_nombre = $fila["producto_nombre"];
                 $entidadAux->total = $fila["total"];
                 $aResultado[] = $entidadAux;
             }
@@ -255,7 +254,31 @@ class Venta{
         $mysqli->close();
         return $aResultado;
 
+        
 
+
+    }
+    
+    public function obtenerfacturacionMensual($mes){
+        $mysqli = new mysqli(Config::BBDD_HOST, Config::BBDD_USUARIO, Config::BBDD_CLAVE, Config::BBDD_NOMBRE, Config::BBDD_PORT);
+        $sql = "SELECT SUM(total) AS total FROM ventas WHERE MONTH(fecha) = $mes";
+        if (!$resultado = $mysqli->query($sql)){
+            printf("Error en query: %s\n", $mysqli->error . " " . $sql);
+        } 
+        $fila = $resultado->fetch_assoc();
+        $mysqli->close();
+        return $fila["total"] != "" ? $fila["total"] : 0; 
+    }
+
+    public function obtenerfacturacionAnual($anio){
+        $mysqli = new mysqli(Config::BBDD_HOST, Config::BBDD_USUARIO, Config::BBDD_CLAVE, Config::BBDD_NOMBRE, Config::BBDD_PORT);
+        $sql = "SELECT SUM(total) AS total FROM ventas WHERE YEAR(fecha) = $anio";
+        if (!$resultado = $mysqli->query($sql)){
+            printf("Error en query: %s\n", $mysqli->error . " " . $sql);
+        } 
+        $fila = $resultado->fetch_assoc();
+        $mysqli->close();
+        return $fila["total"] != "" ? $fila["total"] : 0; 
     }
 }
 

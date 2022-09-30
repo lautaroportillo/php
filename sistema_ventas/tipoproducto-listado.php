@@ -2,7 +2,7 @@
 
 include_once "config.php";
 include_once "entidades/tipoproducto.php";
-$pg = "Listado de tipo de productos";
+$pg = "Listado de Pipo de Productos";
 
 $tipoProducto = new TipoProducto();
 $aTipoProductos = $tipoProducto->obtenerTodos ();

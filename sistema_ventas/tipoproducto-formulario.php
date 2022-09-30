@@ -5,6 +5,8 @@ include_once "header.php";
 include_once "entidades/tipoproducto.php";
 include_once "entidades/producto.php";
 
+$pg = "Formulario de Tipos de Productos";
+
 $tipoProducto = new TipoProducto();
 
 if($_POST){

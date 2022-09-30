@@ -6,7 +6,7 @@ include_once "entidades/producto.php";
 include_once "entidades/venta.php";
 include_once "header.php";
 
-
+$pg = "Formulario de Ventas";
 
 
 

@@ -2,7 +2,7 @@
 
 include_once "config.php";
 include_once "entidades/usuario.php";
-$pg = "Listado de tipo de productos";
+$pg = "Listado de Usuarios";
 
 $usuario = new Usuario();
 $aUsuario = $usuario->obtenerTodos ();
