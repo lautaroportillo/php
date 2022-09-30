@@ -49,7 +49,7 @@ class Producto{
                     '$this->descripcion',
                     '$this->imagen',
                     $this->fk_idtipoproducto
-                );";
+                )";
         // print_r($sql);exit;
         //Ejecuta la query
         if (!$mysqli->query($sql)) {
@@ -65,13 +65,13 @@ class Producto{
     {
 
         $mysqli = new mysqli(Config::BBDD_HOST, Config::BBDD_USUARIO, Config::BBDD_CLAVE, Config::BBDD_NOMBRE, Config::BBDD_PORT);
-        $sql = "UPDATE clientes SET
+        $sql = "UPDATE productos SET
                 nombre = '$this->nombre',
                 cantidad = $this->cantidad,
                 precio = $this->precio,
                 descripcion = '$this->descripcion',
                 imagen =  '$this->imagen',
-                fk_idtipoproducto =  '$this->fk_idtipoproducto',
+                fk_idtipoproducto =  '$this->fk_idtipoproducto'
                 WHERE idproducto = $this->idproducto";
 
         if (!$mysqli->query($sql)) {
@@ -121,6 +121,41 @@ class Producto{
 
     }
 
+    public function obtenerPorTipo($idtipoproducto){
+        $mysqli = new mysqli(Config::BBDD_HOST, Config::BBDD_USUARIO, Config::BBDD_CLAVE, Config::BBDD_NOMBRE, Config::BBDD_PORT);
+        $sql = "SELECT idproducto,
+                        nombre,
+                        cantidad,
+                        precio,
+                        descripcion,
+                        imagen,
+                        fk_idtipoproducto
+                FROM productos
+                WHERE fk_idtipoproducto = $this->$idtipoproducto";
+        if (!$resultado = $mysqli->query($sql)) {
+            printf("Error en query: %s\n", $mysqli->error . " " . $sql);
+        }
+
+        $aResultado = array();
+        if($resultado){
+            //Convierte el resultado en un array asociativo
+
+            while($fila = $resultado->fetch_assoc()){
+                $entidadAux = new Producto();
+                $entidadAux->idproducto = $fila["idproducto"];
+                $entidadAux->nombre = $fila["nombre"];
+                $entidadAux->cantidad = $fila["cantidad"];
+                $entidadAux->precio = $fila["precio"];
+                $entidadAux->descripcion = $fila["descripcion"];
+                $entidadAux->imagen = $fila["imagen"];
+                $entidadAux->fk_idtipoproducto = $fila["fk_idtipoproducto"];
+                $aResultado[] = $entidadAux;
+            }
+        }
+        $mysqli->close();
+        return $aResultado;
+    }
+
     public function obtenerTodos(){
         $mysqli = new mysqli(Config::BBDD_HOST, Config::BBDD_USUARIO, Config::BBDD_CLAVE, Config::BBDD_NOMBRE, Config::BBDD_PORT);
         $sql = "SELECT idproducto,
@@ -151,6 +186,7 @@ class Producto{
                 $aResultado[] = $entidadAux;
             }
         }
+        $mysqli->close();
         return $aResultado;
     }
 

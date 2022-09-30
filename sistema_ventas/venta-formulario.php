@@ -22,7 +22,7 @@ if ($_POST) {
             $msg["texto"] = "actualizado correctamente";
             $msg["codigo"] = "alert-success";
         } else {
-            $ventao->insertar();
+            $venta->insertar();
             $msg["texto"] = "insertado correctamente";
             $msg["codigo"] = "alert-danger";
         }
@@ -77,7 +77,7 @@ $aProductos = $producto->obtenerTodos();
             <label for="txtDia" class="d-block">Fecha y Hora</label>
             <select class="form-control d-line" name="txtDia" id="txtDia" style="width: 80px;">
                 <option selected="" disabled="">DD</option>
-                <?php for ($i = 1; $i = 31; $i++) : ?>
+                <?php for($i = 1; $i <= 31; $i++) : ?>
                     <?php if (date("d") == $i) : ?>
                         <option selected value="<?php echo $i; ?>"><?php echo $i; ?></option>
                     <?php else : ?>
@@ -87,7 +87,7 @@ $aProductos = $producto->obtenerTodos();
             </select>
             <select class="form-control d-line" name="txtMes" id="txtMes" style="width: 80px;">
                 <option selected="" disabled="">MM</option>
-                <?php for ($i = 1; $i = 12; $i++) : ?>
+                <?php for ($i = 1; $i <= 12; $i++) : ?>
                     <?php if (date("m") == $i) : ?>
                         <option selected value="<?php echo $i; ?>"><?php echo $i; ?></option>
                     <?php else : ?>
@@ -105,13 +105,13 @@ $aProductos = $producto->obtenerTodos();
                     <?php endif; ?>
                 <?php endfor; ?>
             </select>
-            <input type="time" required="" class="form-control d_line" style="width: 120px;" name="txtHora" id="txthora" value="<?php echo date("H:i"); ?>">
+            <input type="time" required="" class="form-control d-inline" style="width: 120px;" name="txtHora" id="txthora" value="<?php echo date("H:i"); ?>">
         </div>
         <div class="col-6 form-group">
             <label for="lstCliente">Cliente</label>
             <select required="" class="form-control selectpicker" data-live-search="true" name="lstCliente" id="lstCliente">
                 <option value="" disabled selected>Selecionar</option>
-                <?php foreach ($$aClientes as $cliente) : ?>
+                <?php foreach ($aClientes as $cliente) : ?>
                     <?php if ($cliente->idcliente == $venta->fk_idcliente) : ?>
                         <option selected value="<?php echo $cliente->idcliente; ?>"><?php echo $cliente->nombre; ?></option>
                     <?php else : ?>
@@ -125,7 +125,7 @@ $aProductos = $producto->obtenerTodos();
             <select required="" class="form-control selectpicker" data-live-search="true" name="lstProducto" id="lstProducto">
                 <option value="" disabled selected>Selecionar</option>
                 <?php foreach ($aProductos as $producto) : ?>
-                    <?php if ($producto->idproducto == $$venta->fk_idproducto) : ?>
+                    <?php if ($producto->idproducto == $venta->fk_idproducto) : ?>
                         <option selected value="<?php echo $producto->idproducto; ?>"><?php echo $producto->nombre; ?></option>
                     <?php else : ?>
                         <option value="<?php echo $producto->idproducto; ?>"><?php echo $producto->nombre; ?></option>

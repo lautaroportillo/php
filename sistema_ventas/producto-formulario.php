@@ -53,14 +53,14 @@ if ($_POST) {
             $msg["codigo"] = "alert-success";
         } else {
             $nombreAleatorio = date("Ymdhmsi"); //2021010420453710
-            $archivo_tmp = $_FILES["imagen"]["tmp_name"];
-            $nombreArchivo = $_FILES["imagen"]["name"];
+            $archivo_tmp = $_FILES["archivo"]["tmp_name"];
+            $nombreArchivo = $_FILES["archivo"]["name"];
             $extension = pathinfo($nombreArchivo, PATHINFO_EXTENSION);
             $nombreImagen = "$nombreAleatorio.$extension";
 
             if ($extension == "jpg" || $extension == "jpeg" || $extension == "png") {
                 $nombreImagen = "$nombreAleatorio.$extension";
-                move_uploaded_file($archivo_tmp, "files/$nombreImagen");
+                move_uploaded_file($archivo_tmp, "file/$nombreImagen");
             }
             $producto->imagen = $nombreImagen;
 
@@ -146,9 +146,9 @@ include_once "header.php";
         </div>
         <div class="col-6 form-group">
             <label for="fileImagen">Imagen</label>
-            <input type="file" class="form-control-file" name="imagen" id="imagen">
+            <input type="file" class="form-control-file" name="archivo" id="archivo">
             <?php if ($producto->imagen != "") : ?>
-                <img src="files/<?php echo $producto->imagen; ?>" class="img-thumbnail">
+                <img src="file/<?php echo $producto->imagen; ?>" class="img-thumbnail">
             <?php endif; ?>
         </div>
     </div>
