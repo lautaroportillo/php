@@ -28,6 +28,11 @@ class Producto{
     public function cargarFormulario($request){
         $this->idproducto = isset($request["id"])? $request["id"] : "";
         $this->nombre = isset($request["txtNombre"])? $request["txtNombre"] : "";
+        $this->fk_idtipoproducto = isset($request["lstTipoProducto"]) ? $request["lstTipoProducto"] : "";
+        $this->cantidad = isset($request["txtCantidad"]) ? $request["txtCantidad"] : "";
+        $this->precio= isset($request["txtPrecio"]) ? $request["txtPrecio"] : "";
+        $this->descripcion= isset($request["txtDescripcion"]) ? $request["txtDescripcion"] : "";
+    
     }
     
     public function insertar()
